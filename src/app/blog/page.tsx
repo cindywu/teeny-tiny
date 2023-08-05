@@ -1,11 +1,21 @@
 // 'use client'
 import getDomain from '@/app/lib/getDomain'
 
+// fetch caching options
+
+// force-cache - default
+
+// revalidate: n seconds
+// check every n seconds for new data 
+// good for blog posts that do not require real-time updates
+
+// no-store - triggers every time the component is rendered
+
 async function getData() {
   // // 1 endpoint - API ?
   const domain = getDomain()
   const endpoint = `${domain}/api/posts` // -> third party api request??
-  const res = await fetch(endpoint) // HTTP GET
+  const res = await fetch(endpoint, {next: {revalidate: 10 }}) // HTTP GET
 
   if (!res.ok) {
     throw new Error("Failed to fetch data")
