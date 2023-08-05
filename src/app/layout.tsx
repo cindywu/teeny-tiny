@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'teeny tiny',
-  description: 'production ready url shortening service',
+  description: 'production-ready url shortening service',
 }
 
 export default function RootLayout({
