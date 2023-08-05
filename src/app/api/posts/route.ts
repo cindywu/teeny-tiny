@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-    return NextResponse.json({hello: 'world'})
+    return NextResponse.json({items: [{id: 1, title:"hello world"}]})
 }
 
-export async function POST() {
-    return NextResponse.json({hello: 'abc'})
-}
+// export async function POST() {
+//     return NextResponse.json({hello: 'abc'})
+// }
