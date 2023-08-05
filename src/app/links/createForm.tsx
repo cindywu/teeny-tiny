@@ -23,11 +23,12 @@ export default function LinksCreateForm() {
 		setResults(result)
 	}
 
-	return<>
+	return<div className={"w-64"}>
 		<form className={"flex flex-col"} onSubmit={handleForm}>
-			<input className={'p-4 text-black'} type="text" name="url" placeholder="your url" defaultValue="https://github.com/cindywu/teeny-tiny"/>
-			<button className={'p-4'} type="submit">make url teeny tiny</button>
+			<input className={'p-4 text-black text-xs'} type="text" name="url" placeholder="your url" defaultValue="https://github.com/cindywu/teeny-tiny"/>
+			<button className={'p-4 bg-blue-700 mt-4 text-white'} type="submit">make url teeny tiny</button>
 		</form>
-		{results && JSON.stringify(results)}
-	</>
+		<div className={'py-4 text-xs'}>{results && JSON.stringify(results)}</div>
+		
+	</div>
 }
