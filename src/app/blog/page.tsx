@@ -1,5 +1,5 @@
-// 'use client'
 import getDomain from '@/app/lib/getDomain'
+import BlogCard from './card'
 
 // fetch caching options
 
@@ -32,13 +32,11 @@ async function getData() {
 export default async function BlogPage(){
   const data = await getData()
   const items = data && data.items ? [...data.items] : []
-  console.log({items})
-  console.log(process.env.PUBLIC_DOMAIN)
   return <main>
     <h1>hello world</h1>
     <p>posts:</p>
     {items && items.map((item: {id: number, title: string}, index: number) => {
-      return <li key={`post-${index}`}>{item.title}</li>
+      return <BlogCard key={`post-${index}`} title={item.title}/>
     })}
     </main>
 }
