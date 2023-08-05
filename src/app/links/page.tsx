@@ -1,9 +1,8 @@
-import Image from 'next/image'
-
-export default function Home() {
+import LinksCreateForm from './createForm'
+export default function LinksPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-     <h1>teeny-tiny is coming soon!</h1>
+      <LinksCreateForm />
     </main>
   )
 }
