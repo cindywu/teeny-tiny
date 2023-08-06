@@ -5,6 +5,7 @@ import { desc } from 'drizzle-orm'
 const sql = neon(process.env.DATABASE_URL as string)
 neonConfig.fetchConnectionCache = true
 const db = drizzle(sql)
+import randomShortStrings from './randomShortStrings'
 
 export async function helloWorld() {
   const start = new Date()
@@ -28,7 +29,8 @@ async function configureDatabase() {
 configureDatabase().catch(err=>console.log("db config err", err))
 
 export async function addLink(url: string) {
-  const newLink = {url: url}
+  const short = randomShortStrings()
+  const newLink = {url: url, short: short}
   return await db.insert(LinksTable).values(newLink).returning()
 }
 
