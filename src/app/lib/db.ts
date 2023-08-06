@@ -15,8 +15,9 @@ async function configureDatabase() {
   const dbResponse = await sql`CREATE TABLE IF NOT EXISTS "links" (
     "id" serial PRIMARY KEY NOT NULL,
     "url" text NOT NULL,
+    "short" varchar(50),
     "created_at" timestamp DEFAULT now()
-  )`
+  );`
   console.log("Db response for new table", dbResponse)
 }
 
