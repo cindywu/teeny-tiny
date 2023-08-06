@@ -4,7 +4,7 @@ import { addLink } from '@/app/lib/db'
 import { getMinLinks } from '@/app/lib/db'
 
 export async function GET(request: NextRequest) {
-  const links = await getMinLinks()
+  const links = await getMinLinks(100, 0)
   return NextResponse.json(links, {status: 200})
 }
 
