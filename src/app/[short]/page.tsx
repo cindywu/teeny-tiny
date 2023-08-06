@@ -1,5 +1,19 @@
-import { notFound, redirect } from 'next/navigation' 
+import { notFound } from 'next/navigation' 
 import { getShortLinkRecord } from '@/app/lib/db'
+import getDomain from '../lib/getDomain'
+
+async function triggerVisit(linkId: number){
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({linkId: linkId})
+  }
+  const domain = getDomain()
+  const endpoint = `${domain}/api/visits/`
+  return await fetch(endpoint, options)
+}
 
 export default async function ShortPage({ params }: { params: any }) {
   const { short } = params
@@ -11,10 +25,13 @@ export default async function ShortPage({ params }: { params: any }) {
     notFound() // 404
   }
 
-  const { url } = record
+  const { url, id } = record
 
   if (!url) {
     notFound()
+  }
+  if (id) { 
+    await triggerVisit(id)
   }
   return <h1>{url}</h1>
 }

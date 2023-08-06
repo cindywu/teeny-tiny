@@ -28,14 +28,13 @@ export const LinksTableRelations = relations(LinksTable, ({many, one})=> ({
 
 export const VisitsTable = pgTable("visits", {
   id: serial('id').primaryKey().notNull(),
-  linksId: integer('link_id').notNull().references(() => LinksTable.id),
+  linkId: integer('link_id').notNull().references(() => LinksTable.id),
   createdAt: timestamp("created_at").defaultNow()
 })
 
-
 export const VisitsTableRelations = relations(VisitsTable, ({many, one})=> ({
   link: one(LinksTable, {
-    fields: [VisitsTable.linksId],
+    fields: [VisitsTable.linkId],
     references: [LinksTable.id]
   })
 }))

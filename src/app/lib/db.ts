@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/neon-http'
 import { neon, neonConfig } from '@neondatabase/serverless'
-import { LinksTable } from './schema'
+import { LinksTable, VisitsTable } from './schema'
 import { desc, eq } from 'drizzle-orm'
 const sql = neon(process.env.DATABASE_URL as string)
 neonConfig.fetchConnectionCache = true
@@ -75,6 +75,10 @@ export async function getLinks(limit?: number, offset?: number) {
 
 export async function getShortLinkRecord(shortSlugValue: string) {
   return await db.select().from(LinksTable).where(eq(LinksTable.short, shortSlugValue))
+}
+
+export async function saveLinkVisit(linkIdValue: number) {
+  return await db.insert(VisitsTable).values({linkId: linkIdValue})
 }
 
 export async function getMinLinks(limit?: number, offset?: number) {
