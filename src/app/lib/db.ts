@@ -23,6 +23,12 @@ async function configureDatabase() {
     "short" varchar(50),
     "created_at" timestamp DEFAULT now()
   );`
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS "url_index" ON "links" ("url");`
+  // LOWER is dangerous bc while this works for text between TLD
+  // it causes problems for string after TLD
+  // works for github.com/cindy vs GIThub.com/cindy
+  // but will not always work for https://imgur.com/a/aKPHvY3 v https://imgur.com/a/akphvy3
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS "url_index" ON "links" ((LOWER("url")));`
   console.log("Db response for new table", dbResponse)
 }
 
