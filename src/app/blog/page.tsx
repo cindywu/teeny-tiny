@@ -1,6 +1,8 @@
 import getDomain from '@/app/lib/getDomain'
 import BlogCard from './card'
 
+import { helloWorld } from '@/app/lib/db'
+
 // fetch caching options
 
 // force-cache - default
@@ -31,6 +33,8 @@ async function getData() {
 
 export default async function BlogPage(){
   const data = await getData()
+  const dbHello = await helloWorld()
+  console.log({dbHello})
   const items = data && data.items ? [...data.items] : []
   return <main>
     <h1>hello world</h1>
