@@ -47,5 +47,10 @@ export default async function BlogPage(){
 }
 // defaults to nodejs
 // edge should be faster, efficienter, closer to end users
+
+// export const revalidate = 10 // seconds
+// next.js route segment config 
+// https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+
 export const runtime = 'edge' 
 export const preferredRegion = 'pdx1'
