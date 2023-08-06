@@ -1,5 +1,12 @@
 import { NextResponse, NextRequest } from 'next/server'
 import isValidURL from '@/app/lib/isValidURL'
+import { addLink } from '@/app/lib/db'
+import { getMinLinks } from '@/app/lib/db'
+
+export async function GET(request: NextRequest) {
+  const links = await getMinLinks()
+  return NextResponse.json(links, {status: 200})
+}
 
 export async function POST(request: NextRequest) {
   // using standard HTML form
@@ -17,5 +24,6 @@ export async function POST(request: NextRequest) {
   if (!validURL) {
     return NextResponse.json({"message": `${url} is not valid.`}, {status: 400})
   }
-  return NextResponse.json(data, {status: 201})
+  const dbResponse = await addLink(url)
+  return NextResponse.json(dbResponse, {status: 201})
 }
