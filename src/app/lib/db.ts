@@ -35,10 +35,21 @@ async function configureDatabase() {
 
 configureDatabase().catch(err=>console.log("db config err", err))
 
-export async function addLink(url: string) {
+export async function addLink(url: string): Promise<{data: any, status: number}> {
   const short = randomShortStrings()
   const newLink = {url: url, short: short}
-  return await db.insert(LinksTable).values(newLink).returning()
+  let response : any = [{message: `${url} is not valid. Please try again.`}]
+  let responseStatus = 400
+  try {
+    response = await db.insert(LinksTable).values(newLink).returning()
+    responseStatus = 201
+  } catch ({name, message}: any) {
+    console.log({name, message})
+    if (`${message}.includes("duplicate key value violates unique constraint "url_index")`) {
+      response = [{message: `${url} has already been added.`}]
+    }
+  }
+  return {data: response, status: responseStatus}
 }
 
 export async function getLinks(limit?: number, offset?: number) {

@@ -25,5 +25,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({"message": `${url} is not valid.`}, {status: 400})
   }
   const dbResponse = await addLink(url)
-  return NextResponse.json(dbResponse, {status: 201})
+  const responseData = dbResponse.data && dbResponse.data? dbResponse.data : {}
+  const responseStatus = dbResponse.status && dbResponse.status? dbResponse.status : 500
+  return NextResponse.json(responseData, {status: responseStatus})
 }
