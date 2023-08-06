@@ -16,5 +16,5 @@ export default async function ShortPage({ params }: { params: any }) {
   if (!url) {
     notFound()
   }
-  redirect(url, "push" as any)  
+  return <h1>{url}</h1>
 }
