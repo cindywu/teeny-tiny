@@ -45,3 +45,7 @@ export default async function BlogPage(){
     })}
     </main>
 }
+// defaults to nodejs
+// edge should be faster, efficienter, closer to end users
+export const runtime = 'edge' 
+export const preferredRegion = 'pdx1'
