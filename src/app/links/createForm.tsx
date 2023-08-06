@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-export default function LinksCreateForm() {
+export default function LinksCreateForm({ didSubmit }: { didSubmit: () => void } ) {
 	const [results, setResults] = useState(null)
 	const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
@@ -21,6 +21,9 @@ export default function LinksCreateForm() {
 		const result = await response.json()
 		console.log({result})
 		setResults(result)
+		if (didSubmit) {
+			didSubmit()
+		}
 	}
 
 	return<div className={"w-64"}>
