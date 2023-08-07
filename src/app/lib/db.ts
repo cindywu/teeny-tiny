@@ -58,19 +58,16 @@ configureDatabase().catch(err=>console.log("db config err", err))
 export async function addLink(url: string): Promise<{data: any, status: number}> {
   const short = randomShortStrings()
   const user = await getSessionUser()
-  console.log({user})
   const newLink: any = {url: url, short: short}
 	if (user) {
 		newLink["userId"] = user
 	}
-	console.log(newLink)
   let response : any = [{message: `${url} is not valid. Please try again.`}]
   let responseStatus = 400
   try {
     response = await db.insert(LinksTable).values(newLink).returning()
     responseStatus = 201
   } catch ({name, message}: any) {
-    console.log({name, message})
     if (`${message}.includes("duplicate key value violates unique constraint "url_index")`) {
       response = [{message: `${url} has already been added.`}]
     }
@@ -82,7 +79,7 @@ export async function registerUser(newUserData: { username: string; password: st
 	const { username } = newUserData
   const toInsertData : { username: string; password: string; email?: string; }= {
 		username: username,
-		password: hashPassword(newUserData.password)
+		password: hashPassword(newUserData.password) as unknown as string,
 	}
 	if (newUserData.email) {
 		toInsertData['email'] = newUserData.email
@@ -93,7 +90,6 @@ export async function registerUser(newUserData: { username: string; password: st
   try {
     let dbResponse : any  = await db.insert(UsersTable).values(toInsertData).returning()
 		let dbResponseData = dbResponse[0]
-		console.log({dbResponseData})
 		response = [{
 			id: dbResponseData.id,
 			username: dbResponseData.username,
@@ -101,7 +97,6 @@ export async function registerUser(newUserData: { username: string; password: st
 		}]
     responseStatus = 201
   } catch ({name, message}: any) {
-		console.log({name, message})
     if (`${message}.includes("duplicate key value violates unique constraint "url_index")`) {
       response = [{message: `${username} is taken.`}]
     }

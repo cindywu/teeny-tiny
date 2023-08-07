@@ -32,21 +32,9 @@ export const decodeUserSession = async (jwt: any) => {
   return null
 }
 
-// async function verifySession () {
-//   const userId = "1"
-//   const jwtToken = await encodeUserSession(userId)
-//   const user = await decodeUserSession(`${jwtToken}`)
-//   console.log(user, userId === user)
-// }
-
-// verifySession().then(x=>console.log("verify")).catch(err=>console.log(err))
-
 export const setSessionUser = async (userId: any) => {
   const newSessionValue = await encodeUserSession(userId)
-  
-  // call in routes.ts
   cookies().set("session_id", newSessionValue)
-
 }
 
 export const getSessionUser = async () => {

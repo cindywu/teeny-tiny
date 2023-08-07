@@ -19,7 +19,6 @@ export default function LinksCreateForm({ didSubmit }: { didSubmit: () => void }
 		}
 		const response = await fetch(endpoint, options)
 		const result = await response.json()
-		console.log({result})
 		setResults(result)
 		if (didSubmit) {
 			didSubmit()

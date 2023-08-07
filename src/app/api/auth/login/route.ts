@@ -5,7 +5,6 @@ import { setSessionUser } from '@/app/lib/session'
 
 export async function POST(request: NextRequest) {
   const contentType = await request.headers.get("content-type")
-  console.log({contentType}, "hi")
   if (contentType !== "text/plain;charset=UTF-8") {
     return NextResponse.json({"error": "Invalid request"}, {status: 415})
   }

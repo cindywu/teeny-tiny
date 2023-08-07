@@ -4,9 +4,6 @@ import { useState } from 'react'
 
 export default function RegisterForm() {
 	const [results, setResults] = useState(null)
-	// const verifyPassword = (event: any) => {
-	// 	console.log(event.target.value)
-	// }
 	const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		const formData = new FormData(event.currentTarget)
@@ -20,10 +17,8 @@ export default function RegisterForm() {
 			},
 			body: JSONData
 		}
-		console.log({options})
 		const response = await fetch(endpoint, options)
 		const result = await response.json()
-		console.log({result})
 		setResults(result)
 	}
 
@@ -39,10 +34,8 @@ export default function RegisterForm() {
 				placeholder="your password"
 			/>
 			<input className={'p-4 text-black text-xs'} type="password" name="passwordConfirm" placeholder="confirm your password"/>
-
 			<button className={'p-4 bg-blue-700 mt-4 text-white'} type="submit">register</button>
 		</form>
 		<div className={'py-4 text-xs'}>{results && JSON.stringify(results)}</div>
-		
 	</div>
 }
