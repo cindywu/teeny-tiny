@@ -62,14 +62,14 @@ export async function addLink(url: string): Promise<{data: any, status: number}>
 	if (user) {
 		newLink["userId"] = user
 	}
-  let response : any = [{message: `${url} is not valid. Please try again.`}]
+  let response : any = {message: `${url} is not valid. Please try again.`}
   let responseStatus = 400
   try {
     response = await db.insert(LinksTable).values(newLink).returning()
     responseStatus = 201
   } catch ({name, message}: any) {
     if (`${message}.includes("duplicate key value violates unique constraint "url_index")`) {
-      response = [{message: `${url} has already been added.`}]
+      response = {message: `${url} has already been added.`}
     }
   }
   return {data: response, status: responseStatus}
@@ -85,20 +85,20 @@ export async function registerUser(newUserData: { username: string; password: st
 		toInsertData['email'] = newUserData.email
 	}
 
-  let response : any = [{message: `failed to register. please try again`}]
+  let response : any = {message: `failed to register. please try again`}
   let responseStatus = 400
   try {
     let dbResponse : any  = await db.insert(UsersTable).values(toInsertData).returning()
 		let dbResponseData = dbResponse[0]
-		response = [{
+		response = {
 			id: dbResponseData.id,
 			username: dbResponseData.username,
 			createdAt: dbResponseData.createdAt,
-		}]
+		}
     responseStatus = 201
   } catch ({name, message}: any) {
     if (`${message}.includes("duplicate key value violates unique constraint "url_index")`) {
-      response = [{message: `${username} is taken.`}]
+      response = {message: `${username} is taken.`}
     }
   }
   return {data: response, status: responseStatus}
