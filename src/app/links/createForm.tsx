@@ -31,13 +31,13 @@ export default function LinksCreateForm({ didSubmit }: { didSubmit: () => void }
 		}
 	}
 
-	return<div className={""}>
+	return<div className={"p-8"}>
 		{message && <Alert color="warning">{message}</Alert>}
 		<form className="flex max-w-md flex-col gap-4" onSubmit={handleForm}>
 			<div>
         <div className="mb-2 block ">
           <Label
-						className={"text-black dark:text-white"}
+						className={"text-black dark: text-white"}
             htmlFor="url"
             value="enter url to make teeny tiny"
           />
@@ -54,7 +54,7 @@ export default function LinksCreateForm({ didSubmit }: { didSubmit: () => void }
         make teeny tiny
       </Button>
 		</form>
-		<div className={'py-4 text-xs'}>{results && JSON.stringify(results)}</div>
+		{/* <div className={'py-4 text-xs'}>{results && JSON.stringify(results)}</div> */}
 	</div>
 }
 

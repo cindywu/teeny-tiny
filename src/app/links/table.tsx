@@ -53,7 +53,7 @@ export default function LinksHTMLTable() {
                   {link.url}
                 </Table.Cell>
                 <Table.Cell>
-                  https://teeny-tiny.vercel.app/{link.short}
+                  t-tiny.vercel.app/{link.short}
                 </Table.Cell>
             </Table.Row>
           )})}
