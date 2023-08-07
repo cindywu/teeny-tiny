@@ -153,7 +153,7 @@ export async function getMinLinksAndVisits(limit?: number, offset?: number) {
       createdAt: true,
 			userId: true,
     },
-		where: eq(LinksTable.userId as any, sessionUser as any),
+		// where: eq(LinksTable.userId as any, sessionUser as any),
     with: {
       visits: {
         // limit: 5,

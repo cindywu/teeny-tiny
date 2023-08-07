@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { getShortLinkRecord } from '@/app/lib/db'
 import getDomain from '../lib/getDomain'
 
+export const runtime = 'edge'
+
 async function triggerVisit(linkId: number){
   const options = {
     method: "POST",
@@ -21,9 +23,11 @@ export default async function ShortPage({ params }: { params: any }) {
     notFound()
   }
   const [record] = await getShortLinkRecord(short)
+  
   if (!record) {
     notFound() // 404
   }
+  console.log({record})
 
   const { url, id } = record
 
