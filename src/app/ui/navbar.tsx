@@ -9,7 +9,6 @@ export function NavbarForUser() {
     <Navbar
       fluid
       rounded
-      flex
       justify-between
     >
       <Navbar.Brand href="https://flowbite-react.com">
