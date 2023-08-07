@@ -9,7 +9,7 @@ export default function LoginForm() {
 		const formData = new FormData(event.currentTarget)
 		const data = Object.fromEntries(formData)
 		const JSONData = JSON.stringify(data)
-		const endpoint = "/api/auth/register"
+		const endpoint = "/api/auth/login"
 		const options = {
 			method: 'POST',
 			header: {
@@ -18,8 +18,10 @@ export default function LoginForm() {
 			body: JSONData
 		}
 		const response = await fetch(endpoint, options)
+		if (response.status === 200) {
+			window.location.href="/"
+		}
 		const result = await response.json()
-		console.log({result})
 		setResults(result)
 	}
 
@@ -30,6 +32,5 @@ export default function LoginForm() {
 			<button className={'p-4 bg-blue-700 mt-4 text-white'} type="submit">login</button>
 		</form>
 		<div className={'py-4 text-xs'}>{results && JSON.stringify(results)}</div>
-		
 	</div>
 }
