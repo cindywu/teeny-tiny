@@ -1,9 +1,11 @@
 import { drizzle } from 'drizzle-orm/neon-http'
 import { neon, neonConfig } from '@neondatabase/serverless'
-import { LinksTable, VisitsTable } from './schema'
+import { UsersTable, LinksTable, VisitsTable } from './schema'
 import { desc, eq, sql as sqld } from 'drizzle-orm'
 import randomShortStrings from './randomShortStrings'
 import * as schema from './schema'
+import { getSessionUser } from './session'
+import { hashPassword } from './passwordUtils'
 const sql = neon(process.env.DATABASE_URL as string)
 neonConfig.fetchConnectionCache = true
 const db = drizzle(sql, {schema})
@@ -19,42 +21,49 @@ export async function helloWorld() {
 }
 
 async function configureDatabase() {
-  const dbResponse = await sql`CREATE TABLE IF NOT EXISTS "links" (
-    "id" serial PRIMARY KEY NOT NULL,
-    "url" text NOT NULL,
-    "short" varchar(50),
-    "created_at" timestamp DEFAULT now()
-  );`
-  
-  // LOWER is dangerous bc while this works for text between TLD
-  // it causes problems for string after TLD
-  // works for github.com/cindy vs GIThub.com/cindy
-  // but will not always work for https://imgur.com/a/aKPHvY3 v https://imgur.com/a/akphvy3
-  //
-  // await sql`CREATE UNIQUE INDEX IF NOT EXISTS "url_index" ON "links" ((LOWER("url")));`
-  await sql`CREATE UNIQUE INDEX IF NOT EXISTS "url_index" ON "links" ("url");`
-  
-  await sql`CREATE TABLE IF NOT EXISTS "visits" (
-    "id" serial PRIMARY KEY NOT NULL,
-    "link_id" integer NOT NULL,
-    "created_at" timestamp DEFAULT now()
-  );`
-
-  await sql`
-  DO $$ BEGIN
-    ALTER TABLE "visits" ADD CONSTRAINT "visits_link_id_links_id_fk" FOREIGN KEY ("link_id") REFERENCES "links"("id") ON DELETE no action ON UPDATE no action;
-  EXCEPTION
-    WHEN duplicate_object THEN null;
-  END $$;`
-
-  console.log("Db response for new table", dbResponse)
+  sql`CREATE TABLE IF NOT EXISTS "links" (
+		"id" serial PRIMARY KEY NOT NULL,
+		"url" text NOT NULL,
+		"short" varchar(50),
+		"user_id" integer,
+		"created_at" timestamp DEFAULT now()
+	);`
+  sql`CREATE TABLE IF NOT EXISTS "users" (
+		"id" serial PRIMARY KEY NOT NULL,
+		"username" varchar(50) NOT NULL,
+		"password" text NOT NULL,
+		"email" text,
+		"created_at" timestamp DEFAULT now()
+	);`
+  sql`CREATE TABLE IF NOT EXISTS "visits" (
+		"id" serial PRIMARY KEY NOT NULL,
+		"link_id" integer NOT NULL,
+		"created_at" timestamp DEFAULT now()
+	);`
+	sql`CREATE UNIQUE INDEX IF NOT EXISTS "username_index" ON "users" ("username");`
+	sql`DO $$ BEGIN
+	ALTER TABLE "links" ADD CONSTRAINT "links_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+	EXCEPTION
+	WHEN duplicate_object THEN null;
+	END $$;`
+	sql`DO $$ BEGIN
+	ALTER TABLE "visits" ADD CONSTRAINT "visits_link_id_links_id_fk" FOREIGN KEY ("link_id") REFERENCES "links"("id") ON DELETE no action ON UPDATE no action;
+	EXCEPTION
+	WHEN duplicate_object THEN null;
+	END $$;`
 }
 
 configureDatabase().catch(err=>console.log("db config err", err))
 
 export async function addLink(url: string): Promise<{data: any, status: number}> {
   const short = randomShortStrings()
-  const newLink = {url: url, short: short}
+  const user = await getSessionUser()
+  console.log({user})
+  const newLink: any = {url: url, short: short}
+	if (user) {
+		newLink["userId"] = user
+	}
+	console.log(newLink)
   let response : any = [{message: `${url} is not valid. Please try again.`}]
   let responseStatus = 400
   try {
@@ -64,6 +73,37 @@ export async function addLink(url: string): Promise<{data: any, status: number}>
     console.log({name, message})
     if (`${message}.includes("duplicate key value violates unique constraint "url_index")`) {
       response = [{message: `${url} has already been added.`}]
+    }
+  }
+  return {data: response, status: responseStatus}
+}
+
+export async function registerUser(newUserData: { username: string; password: string; email?: string; }): Promise<{data: any, status: number}> {
+	const { username } = newUserData
+  const toInsertData : { username: string; password: string; email?: string; }= {
+		username: username,
+		password: hashPassword(newUserData.password)
+	}
+	if (newUserData.email) {
+		toInsertData['email'] = newUserData.email
+	}
+
+  let response : any = [{message: `failed to register. please try again`}]
+  let responseStatus = 400
+  try {
+    let dbResponse : any  = await db.insert(UsersTable).values(toInsertData).returning()
+		let dbResponseData = dbResponse[0]
+		console.log({dbResponseData})
+		response = [{
+			id: dbResponseData.id,
+			username: dbResponseData.username,
+			createdAt: dbResponseData.createdAt,
+		}]
+    responseStatus = 201
+  } catch ({name, message}: any) {
+		console.log({name, message})
+    if (`${message}.includes("duplicate key value violates unique constraint "url_index")`) {
+      response = [{message: `${username} is taken.`}]
     }
   }
   return {data: response, status: responseStatus}
@@ -109,6 +149,7 @@ export async function getMinLinksAndVisits(limit?: number, offset?: number) {
       url: true,
       short: true,
       createdAt: true,
+			userId: true,
     },
     with: {
       visits: {

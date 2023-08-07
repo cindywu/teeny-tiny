@@ -9,21 +9,41 @@ import {
   integer
 } from 'drizzle-orm/pg-core'
 
+export const UsersTable = pgTable("users", {
+  id: serial('id').primaryKey().notNull(),
+  username: varchar("username", {length: 50}).notNull(),
+  password: text("password").notNull(), // never store raw data -> hash password using Salt
+  email: text("email"),
+  createdAt: timestamp("created_at").defaultNow()
+}, (users) => {
+  return {
+    usernameIndex: uniqueIndex("username_index").on(users.username)
+  }
+})
+
+// users --> user -> has many links
+
+export const UsersTableRelations = relations(UsersTable, ({many, one})=> ({
+  links: many(LinksTable)
+}))
+
 export const LinksTable = pgTable("links", {
   id: serial('id').primaryKey().notNull(),
   url: text("url").notNull(),
   short: varchar("short", {length: 50}),
+  userId: integer('user_id').references(() => UsersTable.id),
   createdAt: timestamp("created_at").defaultNow()
-}, (links) => {
-  return {
-    urlIndex: uniqueIndex("url_index").on(links.url)
-  }
 })
+
 // links --> link -> has many visits
-// visits --> visit -> one link 
+// links --> link -> has one user
 
 export const LinksTableRelations = relations(LinksTable, ({many, one})=> ({
-  visits: many(VisitsTable)
+  visits: many(VisitsTable),
+  user: one(UsersTable, {
+    fields: [LinksTable.userId],
+    references: [UsersTable.id]
+  })
 }))
 
 export const VisitsTable = pgTable("visits", {
@@ -31,6 +51,8 @@ export const VisitsTable = pgTable("visits", {
   linkId: integer('link_id').notNull().references(() => LinksTable.id),
   createdAt: timestamp("created_at").defaultNow()
 })
+
+// visits --> visit -> one link 
 
 export const VisitsTableRelations = relations(VisitsTable, ({many, one})=> ({
   link: one(LinksTable, {

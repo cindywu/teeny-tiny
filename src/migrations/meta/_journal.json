@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1691292992386,
-      "tag": "0000_windy_ultimates",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1691350157264,
-      "tag": "0001_youthful_shatterstar",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1691352765814,
-      "tag": "0002_curvy_payback",
+      "when": 1691369769755,
+      "tag": "0000_cold_adam_destine",
       "breakpoints": true
     }
   ]
