@@ -33,5 +33,5 @@ export default async function ShortPage({ params }: { params: any }) {
   if (id) { 
     await triggerVisit(id)
   }
-  return <h1>{url}</h1>
+  return <h1 className={'p-8 text-center'}>{url}</h1>
 }
