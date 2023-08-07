@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Button, Label, TextInput } from 'flowbite-react';
+import { Label, TextInput } from 'flowbite-react';
 import { Alert } from "flowbite-react"
 
 export default function LinksCreateForm({ didSubmit }: { didSubmit: () => void } ) {
@@ -36,23 +36,24 @@ export default function LinksCreateForm({ didSubmit }: { didSubmit: () => void }
 		<form className="flex max-w-md flex-col gap-4" onSubmit={handleForm}>
 			<div>
         <div className="mb-2 block ">
-          <Label
-						className={"text-black dark: text-white"}
+          <label
+						className={"text-sm dark:text-white"}
             htmlFor="url"
-            value="enter url to make teeny tiny"
-          />
+          >enter url to make teeny tiny</label>
         </div>
-        <TextInput
+        <input
+					className={'text-black text-sm'}
           id="url"
           placeholder="your url"
           required
 					name="url"
           type="text"
+					autoComplete="off"
         />
       </div>
-			<Button type="submit">
+			<button className={'p-4 text-sm bg-blue-800 hover:bg-blue-700 text-white'} type="submit">
         make teeny tiny
-      </Button>
+      </button>
 		</form>
 		{/* <div className={'py-4 text-xs'}>{results && JSON.stringify(results)}</div> */}
 	</div>
