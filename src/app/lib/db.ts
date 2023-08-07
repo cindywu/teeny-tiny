@@ -130,16 +130,18 @@ export async function saveLinkVisit(linkIdValue: number) {
 export async function getMinLinks(limit?: number, offset?: number) {
   const lookupLimit = limit ? limit : 10
   const lookupOffset = offset ? offset : 0
+	const sessionUser = await getSessionUser()
   return await db.select({
     id: LinksTable.id,
     url: LinksTable.url,
     timestamp: LinksTable.createdAt,
-  }).from(LinksTable).limit(lookupLimit).offset(lookupOffset).orderBy(desc(LinksTable.createdAt))
+  }).from(LinksTable).limit(lookupLimit).offset(lookupOffset).orderBy(desc(LinksTable.createdAt)).where(eq(LinksTable.userId as any, sessionUser as any))
 }
 
 export async function getMinLinksAndVisits(limit?: number, offset?: number) {
   const lookupLimit = limit ? limit : 10
   const lookupOffset = offset ? offset : 0
+	const sessionUser = await getSessionUser()
   // return await db.select({
   //   id: LinksTable.id,
   //   url: LinksTable.url,
@@ -155,6 +157,7 @@ export async function getMinLinksAndVisits(limit?: number, offset?: number) {
       createdAt: true,
 			userId: true,
     },
+		where: eq(LinksTable.userId as any, sessionUser as any),
     with: {
       visits: {
         // limit: 5,
