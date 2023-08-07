@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation' 
+import { notFound, redirect } from 'next/navigation' 
 import { getShortLinkRecord } from '@/app/lib/db'
 import getDomain from '../lib/getDomain'
 
@@ -37,5 +37,6 @@ export default async function ShortPage({ params }: { params: any }) {
   if (id) { 
     await triggerVisit(id)
   }
-  return <h1 className={'p-8 text-center'}>{url}</h1>
+  redirect(url)
+  // return <h1 className={'p-8 text-center'}>{url}</h1>
 }
