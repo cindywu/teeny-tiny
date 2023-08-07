@@ -2,6 +2,7 @@
 
 import useSWR from 'swr'
 import LinksCreateForm from './createForm'
+import { Table } from 'flowbite-react';
 
 const fetcher = (url: any) => fetch(url).then((res)=>res.json())
 
@@ -22,11 +23,44 @@ export default function LinksHTMLTable() {
   const didSubmit = () => {
     mutate()
   }
-  
+
   return (
     <>
       <LinksCreateForm didSubmit={didSubmit}/>
-      <table>
+      <Table>
+        <Table.Head>
+          <Table.HeadCell>
+            ID
+          </Table.HeadCell>
+          <Table.HeadCell>
+            URL
+          </Table.HeadCell>
+          <Table.HeadCell>
+            Teeny Tiny Link
+          </Table.HeadCell>
+        </Table.Head>
+        <Table.Body className="divide-y">
+          {data && data.map((link: any, index: number) => {
+            return(
+              <Table.Row 
+                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                key={`link-item-${link.id}-${index}`}
+              >
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  {link.id}
+                </Table.Cell>
+                <Table.Cell>
+                  {link.url}
+                </Table.Cell>
+                <Table.Cell>
+                  https://teeny-tiny.vercel.app/{link.short}
+                </Table.Cell>
+            </Table.Row>
+          )})}
+        </Table.Body>
+      </Table>
+
+      {/* <table>
         <tbody>
           {data && data.map((link: any, index: number) => {
             return <tr key={`link-item-${link.id}-${index}`}>
@@ -35,8 +69,7 @@ export default function LinksHTMLTable() {
             </tr>
           })}
         </tbody>
-      </table>
+      </table> */}
     </>
   )
 }
-

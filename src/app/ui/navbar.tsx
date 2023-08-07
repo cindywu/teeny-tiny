@@ -71,7 +71,7 @@ export function NavbarForAnon() {
       fluid
       rounded
     >
-      <Navbar.Brand href="https://flowbite-react.com">
+      <Navbar.Brand href="https://teeny-tiny.vercel.app">
         <Image
           alt="Flowbite React Logo"
           className="mr-3 h-6 sm:h-9"

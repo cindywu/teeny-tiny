@@ -1,9 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { Button, Label, TextInput } from 'flowbite-react';
+import { Alert } from "flowbite-react"
 
 export default function LinksCreateForm({ didSubmit }: { didSubmit: () => void } ) {
 	const [results, setResults] = useState(null)
+	const [message, setMessage] = useState(null)
 	const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		const formData = new FormData(event.currentTarget)
@@ -23,14 +26,36 @@ export default function LinksCreateForm({ didSubmit }: { didSubmit: () => void }
 		if (didSubmit) {
 			didSubmit()
 		}
+		if (result.message) {
+			setMessage(result.message)
+		}
 	}
 
-	return<div className={"w-64"}>
-		<form className={"flex flex-col"} onSubmit={handleForm}>
-			<input className={'p-4 text-black text-xs'} type="text" name="url" placeholder="your url" defaultValue="https://github.com/cindywu/teeny-tiny"/>
-			<button className={'p-4 bg-blue-700 mt-4 text-white'} type="submit">make url teeny tiny</button>
+	return<div className={""}>
+		{message && <Alert color="warning">{message}</Alert>}
+		<form className="flex max-w-md flex-col gap-4" onSubmit={handleForm}>
+			<div>
+        <div className="mb-2 block ">
+          <Label
+						className={"text-black dark:text-white"}
+            htmlFor="url"
+            value="enter url to make teeny tiny"
+          />
+        </div>
+        <TextInput
+          id="url"
+          placeholder="your url"
+          required
+					name="url"
+          type="text"
+        />
+      </div>
+			<Button type="submit">
+        make teeny tiny
+      </Button>
 		</form>
 		<div className={'py-4 text-xs'}>{results && JSON.stringify(results)}</div>
-		
 	</div>
 }
+
+
