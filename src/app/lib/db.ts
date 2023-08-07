@@ -79,7 +79,7 @@ export async function registerUser(newUserData: { username: string; password: st
 	const { username } = newUserData
   const toInsertData : { username: string; password: string; email?: string; }= {
 		username: username,
-		password: hashPassword(newUserData.password) as unknown as string,
+		password: await hashPassword(newUserData.password) as unknown as string,
 	}
 	if (newUserData.email) {
 		toInsertData['email'] = newUserData.email

@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   const userRecord = dbResponse[0]
   const userRecordId = userRecord.id
   const storedUserHash = userRecord.password
-  const isValidPasswordRequest = isMatchingPassword(password, storedUserHash)
+  const isValidPasswordRequest = await isMatchingPassword(password, storedUserHash)
   if (!isValidPasswordRequest) {
     return NextResponse.json({"message": `Invalid creds, please try again.`}, {status: 400})
   }
